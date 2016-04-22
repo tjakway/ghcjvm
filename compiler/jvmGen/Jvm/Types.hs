@@ -6,7 +6,10 @@ module Jvm where
 
 -- data types and access modifiers
 
-data JVMAccessModifier = undefined
+data JVMAccessModifier
+    = Public
+    | Protected
+    | Private
 
 data JVMCodeLoc = undefined
 
@@ -18,9 +21,9 @@ data JVMPrimitiveType
     | JVMChar
     | JVMFloat
     | JVMDouble
+    | JVMVoid
     -- WARNING-- special type, pointer to JVM opcodes
     | JVMReturnAddress JVMCodeLoc
-    | JVMVoid
 
 data JVMClass = JVMClass
     { classAccess :: JVMAccessModifier
@@ -43,15 +46,25 @@ data JVMType
     | JVMType JVMPrimitiveType
     | JVMArray JVMClass
 
+-- fields are variables with access modifiers
+-- Java doesn't have any "global" variables
+-- the closest thing is a public static field of a public class
 data JVMField = JVMField
-    { fieldType :: JVMType
+    { fieldVar :: JVMVar 
     , fieldInitialValue :: Maybe JVMExpr -- ^ ought to be compiled into <init> aka the constructor
                                     -- could do a source-to-source
                                     -- transformation of moving all
                                     -- initial value code into the
                                     -- beginning of the class' constructor
+                                    --
+                                    -- fieldInitialValue isn't strictly
+                                    -- necessary since we're generating
+                                    -- bytecode and could treat these as
+                                    -- normal stores that come first
+                                    -- however, it is helpful to know that
+                                    -- these ought to be done at the very
+                                    -- top of <init>
     , fieldAccess :: JVMAccessModifier
-    , fieldAttributes :: [JVMAttribute]
     }
 
 -- | WARNING: not all attributes are valid for all types
@@ -72,12 +85,11 @@ data JVMMethod = JVMMethod
 
 -- expression types
 
--- Java doesn't have any "global" variables
--- the closest thing is a public static field of a public class
-data JVMVar 
-    = JVMVar JVMField
-    --local variables are referenced by index, counting from 0 for static
-    --methods and 1 for non-static methods (local variable 0 is the this
-    --pointer in non-static methods) 
-    --the JVM limits the number of local variables to 65535
-    | JVMLocalVar Int16 JVMType 
+-- XXX: Should JVMVar encapsulate JVMField or the other way around?
+data JVMVar = JVMVar JVMType [JVMAttribute]
+
+--local variables are referenced by index, counting from 0 for static
+--methods and 1 for non-static methods (local variable 0 is the this
+--pointer in non-static methods) 
+--the JVM limits the number of local variables to 65535
+data JVMLocalVar = JVMLocalVar Int16 JVMType [JVMAttribute]
