@@ -89,4 +89,11 @@ data JVMVar = JVMVar JVMType [JVMAttribute]
 --methods and 1 for non-static methods (local variable 0 is the this
 --pointer in non-static methods) 
 --the JVM limits the number of local variables to 65535
-data JVMLocalVar = JVMLocalVar Int16 JVMType [JVMAttribute]
+
+type VarNum = Int16
+
+data JVMLocalVar = JVMLocalVar VarNum JVMType [JVMAttribute]
+
+-- | abstract type representing an intermediate value
+-- will later be assigned either to local variables or the stack
+data JVMValue a = JVMValue JVMType a
