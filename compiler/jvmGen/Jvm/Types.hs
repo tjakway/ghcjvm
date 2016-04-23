@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 
-module Jvm where
+module Jvm.Types where
 
 #include "HsVersions.h"
 
@@ -32,10 +32,6 @@ data JVMClass = JVMClass
     , classConstructor :: Maybe JVMMethod
     , classAttributes :: [Attribute]
     }
-
--- |Java strings are objects but are treated specially by the JVM in many
--- ways
-type JVMString = JVMClass
 
 -- |an array with an associated inner type
 newtype JVMArray = JVMArray { getClass :: JVMClass }
@@ -75,6 +71,7 @@ data JVMAttribute
     | Abstract
     | Sychronized
     | Volatile
+    | Native
 
 data JVMMethod = JVMMethod
     { methodAccess :: JVMAccessModifier
