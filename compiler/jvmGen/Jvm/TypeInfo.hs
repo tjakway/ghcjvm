@@ -9,5 +9,5 @@ isConstant :: JVMVar -> Bool
 isConstant (JVMVar _ []) = False
 isConstant (JVMVar _ attrs) = Final `elem` attrs
 
-methodSignature :: JVMClass -> JVMMethod -> FastString
-methodSignature = undefined
+getMethodSignature :: JVMClass -> JVMMethod -> MethodSpec
+getMethodSignature = undefined

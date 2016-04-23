@@ -82,6 +82,8 @@ data JVMMethod = JVMMethod
     , methodParameters :: [JVMType] -- ^ Invariant: cannot have more than 255 method parameters
     }
 
+type MethodSpec = FastString
+
 -- expression types
 
 -- XXX: Should JVMVar encapsulate JVMField or the other way around?
@@ -99,3 +101,8 @@ data JVMLocalVar = JVMLocalVar VarNum JVMType [JVMAttribute]
 -- | abstract type representing an intermediate value
 -- will later be assigned either to local variables or the stack
 data JVMValue a = JVMValue JVMType a
+
+-- | the field spec is the classname and the fieldname
+type FieldSpec = FastString
+-- | the field descriptor is the java type of the field
+type FieldDescriptor = FastString
