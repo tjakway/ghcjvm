@@ -2,6 +2,8 @@
 
 module Jvm.Types where
 
+import FastString
+
 #include "HsVersions.h"
 
 -- data types and access modifiers
@@ -27,7 +29,7 @@ data JVMPrimitiveType
 
 data JVMClass = JVMClass
     { classAccess :: JVMAccessModifier
-    , className :: Text -- ^ the fully qualified name of the class
+    , className :: FastString -- ^ the fully qualified name of the class
     , classFields :: [JVMField]
     , classConstructor :: Maybe JVMMethod
     , classAttributes :: [Attribute]
