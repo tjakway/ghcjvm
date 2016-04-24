@@ -4,6 +4,8 @@ module Jvm.Instructions where
 
 #include "HsVersions.h"
 
+import Jvm.Types
+
 data Instruction
     -- return to the address in the passed local variable
     = Ret VarNum
@@ -44,7 +46,7 @@ data Instruction
     
     -- method calls
     -- the MethodSpec indicates which method to call
-    | Invokenonvirtual MethodSpec
+    | Invokevirtual MethodSpec
     | Invokestate MethodSpec
     | Invokenonvirtual MethodSpec
 
