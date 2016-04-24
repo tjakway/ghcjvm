@@ -13,6 +13,7 @@ data AbstractInstruction
     | Load JvmValue      -- ^ pushes the variable onto the stack
     | Store JvmValue     -- ^ pops a value into the local variable
     | Push JvmValue
-    | Get JvmClass JvmField -- ^ get a field (static or non-static)
+    | Getfield JvmClass JvmField -- ^ get a field (static or non-static)
     | Put JvmClass JvmField JvmValue -- ^ put a value into the specified (static or non-static) field
-    
+    | Call JvmClass JvmMethod [JvmPrimitiveValue]
+    | Ldc JvmValue
