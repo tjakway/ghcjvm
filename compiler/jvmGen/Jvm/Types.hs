@@ -45,6 +45,15 @@ data JvmPrimitiveType
     | JvmReturnAddressType
     deriving (Eq, Show)
 
+data JvmType
+    = JvmClassType JvmClass
+    | JvmPrimType JvmPrimitiveType
+    | JvmArray JvmClass
+    deriving (Eq, Show)
+
+
+-------------------------------------------------------------------------
+
 data JvmClass = JvmClass
     { classAccess :: JvmAccessModifier
     , className :: FastString -- ^ the fully qualified name of the class
@@ -58,11 +67,6 @@ data JvmClass = JvmClass
 --newtype JvmArray = JvmArray { getClass :: JvmClass }
 
 
-data JvmType
-    = JvmClassType JvmClass
-    | JvmPrimType JvmPrimitiveType
-    | JvmArray JvmClass
-    deriving (Eq, Show)
 
 -- fields are variables with access modifiers
 -- Java doesn't have any "global" variables
