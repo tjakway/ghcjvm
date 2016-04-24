@@ -9,8 +9,9 @@ import FastString
 import GHC.Int (Int32)
 
 type Index = Int32
-type Count = Int32
+type Count = Int32 -- ^ the JVM 7 spec often refers to size as "count", this convention is followed here
 
+-- | instructions and their parameters
 -- TODO: add caload, castore, checkcast
 data Instruction
     -- return to the address in the passed local variable
@@ -25,8 +26,10 @@ data Instruction
             Index         -- ^ the index to store at
             JvmReference  -- ^ the reference to store in the array
 
-    | baload JvmReference Int8 -- ^ load a byte or boolean from an array
-    | bastore JvmReference Index Int8 -- ^ store a byte or boolean into the array
+    | Baload JvmReference Int8 -- ^ load a byte or boolean from an array
+    | Bastore JvmReference Index Int8 -- ^ store a byte or boolean into the array
+    | Daload JvmReference Index -- ^ load double from an array
+    | Dastore JvmReference Index Double -- ^ store double into an array
 
     -- loads and stores for various types
     | Aload VarNum  -- ^ load reference from the passed variable number
@@ -44,7 +47,17 @@ data Instruction
     | bipush Int8 -- ^ push byte onto the stack
 
     | Dload VarNum
+    | Dload_0
+    | Dload_1
+    | Dload_2
+    | Dload_3
+
     | Dstore VarNum
+    | Dstore_0
+    | Dstore_1
+    | Dstore_2
+    | Dstore_3
+
     | Fload VarNum
     | Fstore VarNum
     | Iload VarNum
@@ -74,17 +87,41 @@ data Instruction
     -- pushes a null reference
     | Aconst_null
     
+
+    -- comparisons
+    -- **********************************
+    | Dcmpg Double Double -- ^ if first > second, pushes (int) 1
+                          --   if first == second, pushes (int) 0
+                          --   if first < second, pushes (int) -1
+    | Dcmpl Double Double -- ^ dcmpg and dcmpl are identical except for their treatment of NaN
+                          --   for details see the spec, pages 396-397
+
+    -- Arithmetic Instructions
+    -- **********************************
+    | Dadd Double Double
+    | Ddiv Double Double -- ^ first / second
+    | Dmul Double Double
+    | Dneg Double        -- ^ negate the double on the top of the stack
+    | Drem Double Double -- ^ first `mod` second ("remainder")
+    | Dsub Double Double -- ^ first - second
+
+    
+
     -- method calls
     -- the MethodSpec indicates which method to call
+    -- **********************************
     | Invokevirtual MethodSpec
     | Invokestate MethodSpec
     | Invokenonvirtual MethodSpec
 
+
     | Areturn JvmReference -- ^ return a reference to the method caller
+    | Dreturn Double
 
     -- instructions to manipulate fields
     -- see FieldSpec and FieldDescriptor for an explanation of their
     -- meanings
+    -- **********************************
     | Getfield FieldSpec FieldDescriptor
     | Getstatic FieldSpec FieldDescriptor
     | Putfield FieldSpec FieldDescriptor
@@ -92,21 +129,38 @@ data Instruction
 
 
     -- arrays
-    | Arraylength JvmReference Int32 -- ^ pops an array reference and pushes its size
+    -- **********************************
+    | Arraylength JvmReference -- ^ pops an array reference and pushes its size
     | Anewarray  -- ^ creates a new array of references
                  -- takes 3 parameters, 2 of them as operands and one of
                  -- them on the stack
             Int8  -- ^ indexbyte1 -- PASSED AS AN OPERAND
             Int8  -- ^ indexbyte2 -- PASSED AS AN OPERAND
             Count -- ^ the count -- will be popped off the stack
-    | Newarray FastString
+    | Newarray Count -- ^ pass size
 
     -- "load constant", pushes a value on the stack
     -- Jasmin automatically handles converting ldc <=> ldc_w
+    -- **********************************
     | Ldc JvmValue
 
     -- type conversion
-    | D2f
+    -- **********************************
+    | D2f Double -- ^ Double -> float
+    | D2i Double -- ^ Double -> int32
+    | D2l Double -- ^ Double -> long
+
+    -- stack manipulation instructions
+    -- **********************************
+    | Dup        -- ^ duplicates the value on top of the stack
+    | Dup_x1     -- ^ duplicate the top value and insert it 2 values down
+    | Dup_x2     -- ^ duplicate the top value and insert it 3 values down
+                 --   if there are only 2 values on the stack it behaves
+                 --   identically to Dup_x1
+    | Dup2       -- ^ duplicate top 2 values on the stack
+                 --   identical to dup if there's only one value on the
+                 --   stack
+    | 
 
     -- Exceptions
     | athrow JvmReference -- ^ doesn't fit well in this format because athrow doesn't really "return"
