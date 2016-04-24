@@ -5,6 +5,7 @@ module Jvm.Instructions where
 #include "HsVersions.h"
 
 import Jvm.Types
+import FastString
 
 data Instruction
     -- return to the address in the passed local variable
