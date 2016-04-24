@@ -12,7 +12,7 @@ type Index = Int32
 type Count = Int32 -- ^ the JVM 7 spec often refers to size as "count", this convention is followed here
 
 -- | instructions and their parameters
--- TODO: add caload, castore, checkcast
+-- TODO: add caload, castore, checkcast, dup2_x1, dup2_x2
 data Instruction
     -- return to the address in the passed local variable
     = Ret VarNum
@@ -30,6 +30,8 @@ data Instruction
     | Bastore JvmReference Index Int8 -- ^ store a byte or boolean into the array
     | Daload JvmReference Index -- ^ load double from an array
     | Dastore JvmReference Index Double -- ^ store double into an array
+    | Faload JvmReference Index 
+    | Fastore JvmReference Index Float
 
     -- loads and stores for various types
     | Aload VarNum  -- ^ load reference from the passed variable number
@@ -59,7 +61,17 @@ data Instruction
     | Dstore_3
 
     | Fload VarNum
+    | Fload_0
+    | Fload_1
+    | Fload_2
+    | Fload_3
+
     | Fstore VarNum
+    | Fstore_0
+    | Fstore_1
+    | Fstore_2
+    | Fstore_3
+
     | Iload VarNum
     | Istore VarNum
     | Lload VarNum
@@ -96,6 +108,10 @@ data Instruction
     | Dcmpl Double Double -- ^ dcmpg and dcmpl are identical except for their treatment of NaN
                           --   for details see the spec, pages 396-397
 
+    | fcmpg Float Float   -- ^ identical to above
+    | fcmpl Float Float
+
+
     -- Arithmetic Instructions
     -- **********************************
     | Dadd Double Double
@@ -105,6 +121,12 @@ data Instruction
     | Drem Double Double -- ^ first `mod` second ("remainder")
     | Dsub Double Double -- ^ first - second
 
+    -- these are identical to the above
+    | Fadd Float Float
+    | Fdiv Float Float
+    | Fmul Float Float
+    | Fneg Float
+    | Frem Float Float
     
 
     -- method calls
@@ -117,6 +139,7 @@ data Instruction
 
     | Areturn JvmReference -- ^ return a reference to the method caller
     | Dreturn Double
+    | Freturn Float
 
     -- instructions to manipulate fields
     -- see FieldSpec and FieldDescriptor for an explanation of their
@@ -149,6 +172,9 @@ data Instruction
     | D2f Double -- ^ Double -> float
     | D2i Double -- ^ Double -> int32
     | D2l Double -- ^ Double -> long
+    | F2d Float  -- ^ Float  -> double
+    | F2i Float  -- ^ Float  -> int32
+    | F2l Float  -- ^ Float  -> long
 
     -- stack manipulation instructions
     -- **********************************
@@ -160,7 +186,6 @@ data Instruction
     | Dup2       -- ^ duplicate top 2 values on the stack
                  --   identical to dup if there's only one value on the
                  --   stack
-    | 
 
     -- Exceptions
     | athrow JvmReference -- ^ doesn't fit well in this format because athrow doesn't really "return"
