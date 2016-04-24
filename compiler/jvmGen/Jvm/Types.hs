@@ -10,6 +10,8 @@ import GHC.Int (Int8, Int16, Int32, Int64)
 
 -- data types and access modifiers
 
+type ClassName = FastString
+
 data JvmAccessModifier
     = Public
     | Protected
@@ -57,7 +59,7 @@ data JvmType
 
 data JvmClass = JvmClass
     { classAccess :: JvmAccessModifier
-    , className :: FastString -- ^ the fully qualified name of the class
+    , className :: ClassName -- ^ the fully qualified name of the class
     , classFields :: [JvmField]
     , classConstructor :: Maybe JvmMethod
     , classAttributes :: [JvmAttribute]
@@ -111,7 +113,6 @@ data JvmMethod = JvmMethod
     }
     deriving (Eq, Show)
 
-type MethodSpec = FastString
 
 -- expression types
 
