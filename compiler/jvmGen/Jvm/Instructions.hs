@@ -111,7 +111,10 @@ data Instruction
     | fcmpg Float Float   -- ^ identical to above
     | fcmpl Float Float
 
-
+    -- branch instructions
+    -- **********************************
+    | Goto JvmCodeLoc -- ^ unconditional branch
+    
     -- Arithmetic Instructions
     -- **********************************
     | Dadd Double Double
@@ -127,7 +130,10 @@ data Instruction
     | Fmul Float Float
     | Fneg Float
     | Frem Float Float
+    | Fsub Float Float
     
+    | Iadd Int32 Int32
+
 
     -- method calls
     -- the MethodSpec indicates which method to call
@@ -175,6 +181,11 @@ data Instruction
     | F2d Float  -- ^ Float  -> double
     | F2i Float  -- ^ Float  -> int32
     | F2l Float  -- ^ Float  -> long
+    | I2c Int32  -- ^ Int32  -> char
+    | I2d Int32
+    | I2f Int32
+    | I2l Int32
+    | I2s Int32
 
     -- stack manipulation instructions
     -- **********************************
