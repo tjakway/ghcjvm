@@ -16,7 +16,8 @@ data JvmAccessModifier
     | Private
     deriving (Eq, Show)
 
---data JvmCodeLoc = undefined
+-- XXX: implement
+data JvmCodeLoc = JvmCodeLoc FastString
 
 data JvmPrimitiveValue
     = JvmInt Int32
