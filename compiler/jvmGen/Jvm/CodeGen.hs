@@ -4,16 +4,16 @@ import Jvm.Types
 import Jvm.Expressions
 import Jvm.Instructions
 
-stackSize :: JVMMethod -> Int
+stackSize :: JvmMethod -> Int
 stackSize = undefined
 
-numLocalVars :: JVMMethod -> Int
+numLocalVars :: JvmMethod -> Int
 numLocalVars = undefined
 
 -- | compile an abstract instruction into its concrete type
 compileInstruction :: AbstractInstruction -> Instruction
 compileInstruction = undefined
 
-mkConst :: JVMVar -> JVMVar
-mkConst (JVMVar a []) = JVMVar a [Final]
-mkConst (JVMVar a attrs) = if Final `elem` attrs then (JVMVar a attrs) else (JVM a (Final : attrs))
+mkConst :: JvmVar -> JvmVar
+mkConst (JvmVar a []) = JvmVar a [Final]
+mkConst (JvmVar a attrs) = if Final `elem` attrs then (JvmVar a attrs) else (JvmVar a (Final : attrs))
