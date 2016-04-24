@@ -6,7 +6,7 @@ import FastString
 
 #include "HsVersions.h"
 
-import GHC.Int (Int16)
+import GHC.Int (Int8, Int16, Int32)
 
 -- data types and access modifiers
 
@@ -17,17 +17,28 @@ data JVMAccessModifier
 
 --data JVMCodeLoc = undefined
 
-data JVMPrimitiveType
-    = JVMInt
-    | JVMByte
-    | JVMShort
-    | JVMLong
-    | JVMChar
-    | JVMFloat
-    | JVMDouble
+data JVMPrimitiveValue
+    = JVMInt Int32
+    | JVMByte Int8
+    | JVMShort Int16
+    | JVMLong Int64
+    | JVMChar Int16 -- ^ the JVM uses UTF-16, chars are 16 bits
+    | JVMFloat Float
+    | JVMDouble Double
     | JVMVoid
+--    | JVMReturnAddress JVMCodeLoc
+
+data JVMPrimitiveType
+    = JVMIntType
+    | JVMByteType
+    | JVMShortType
+    | JVMLongType
+    | JVMCharType
+    | JVMFloatType
+    | JVMDoubleType
+    | JVMVoidType
     -- WARNING-- special type, pointer to JVM opcodes
-    | JVMReturnAddress JVMCodeLoc
+    | JVMReturnAddressType
 
 data JVMClass = JVMClass
     { classAccess :: JVMAccessModifier
@@ -49,8 +60,9 @@ data JVMType
 -- fields are variables with access modifiers
 -- Java doesn't have any "global" variables
 -- the closest thing is a public static field of a public class
-data JVMField = JVMField
-    { fieldVar :: JVMVar 
+data JVMField a = JVMField
+    { fieldVar :: JVMVar a
+    -- XXX: JVMVar also encapsulates JVMValue!
     , fieldInitialValue :: Maybe JVMValue -- ^ ought to be compiled into <init> aka the constructor
                                     -- could do a source-to-source
                                     -- transformation of moving all
@@ -89,7 +101,7 @@ type MethodSpec = FastString
 -- expression types
 
 -- XXX: Should JVMVar encapsulate JVMField or the other way around?
-data JVMVar = JVMVar JVMType [JVMAttribute]
+data JVMVar a = JVMVar (JVMValue a) [JVMAttribute]
 
 --local variables are referenced by index, counting from 0 for static
 --methods and 1 for non-static methods (local variable 0 is the this
