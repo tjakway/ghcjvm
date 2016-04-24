@@ -29,13 +29,19 @@ data Instruction
             FastString      -- ^ label name
     
     
-    -- | miscellaneous instructions
+    -- miscellaneous instructions
+    -- **********************************
     | Ret VarNum -- ^ return to the address in the passed local variable
     | Iinc VarNum Int8 -- ^ increment variable by the amount
     | Instanceof ClassName -- ^ check if the reference on top of the stack is an instance of ClassName
                            -- if ClassName is null, pushes (int) 0
                            -- if true, pushes 1
                            -- Otherwise, pushes 0
+
+    -- bit manipulation
+    -- **********************************
+    | Ishl Int32 Int32 -- ^ shift $first left by $second bits (only reads the low 5 bits from $second)
+    | Ishr Int32 Int32 -- ^ arithmetic shift right
 
     -- loads and stores
     -- **********************************
