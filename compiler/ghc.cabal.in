@@ -139,6 +139,7 @@ Library
         ghci
         hsSyn
         iface
+        jvmGen
         llvmGen
         main
         nativeGen
@@ -577,6 +578,11 @@ Library
             Dwarf
             Dwarf.Types
             Dwarf.Constants
+            Jvm.CodeGen
+            Jvm.Expressions
+            Jvm.Instructions
+            Jvm.TypeInfo
+            Jvm.Types
 
     if !flag(stage1)
         -- ghc:Serialized moved to ghc-boot:GHC.Serialized.  So for
