@@ -63,4 +63,4 @@ data Instruction
 
     -- "load constant", pushes a value on the stack
     -- Jasmin automatically handles converting ldc <=> ldc_w
-    | Ldc JVMValue
+    | Ldc JvmValue

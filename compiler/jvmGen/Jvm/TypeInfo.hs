@@ -5,9 +5,9 @@ import FastString
 
 -- only variables can be constant
 -- methods can be declared final but this has a totally different meaning
-isConstant :: JVMVar -> Bool
-isConstant (JVMVar _ []) = False
-isConstant (JVMVar _ attrs) = Final `elem` attrs
+isConstant :: JvmVar -> Bool
+isConstant (JvmVar _ []) = False
+isConstant (JvmVar _ attrs) = Final `elem` attrs
 
-getMethodSignature :: JVMClass -> JVMMethod -> MethodSpec
+getMethodSignature :: JvmClass -> JvmMethod -> MethodSpec
 getMethodSignature = undefined
