@@ -10,67 +10,67 @@ import GHC.Int (Int8, Int16, Int32, Int64)
 
 -- data types and access modifiers
 
-data JVMAccessModifier
+data JvmAccessModifier
     = Public
     | Protected
     | Private
     deriving (Eq, Show)
 
---data JVMCodeLoc = undefined
+--data JvmCodeLoc = undefined
 
-data JVMPrimitiveValue
-    = JVMInt Int32
-    | JVMByte Int8
-    | JVMShort Int16
-    | JVMLong Int64
-    | JVMChar Int16 -- ^ the JVM uses UTF-16, chars are 16 bits
-    | JVMFloat Float
-    | JVMDouble Double
-    | JVMVoid
---    | JVMReturnAddress JVMCodeLoc
+data JvmPrimitiveValue
+    = JvmInt Int32
+    | JvmByte Int8
+    | JvmShort Int16
+    | JvmLong Int64
+    | JvmChar Int16 -- ^ the Jvm uses UTF-16, chars are 16 bits
+    | JvmFloat Float
+    | JvmDouble Double
+    | JvmVoid
+--    | JvmReturnAddress JvmCodeLoc
     -- XXX
-    | JVMReference
+    | JvmReference
     deriving (Eq, Show)
 
-data JVMPrimitiveType
-    = JVMIntType
-    | JVMByteType
-    | JVMShortType
-    | JVMLongType
-    | JVMCharType
-    | JVMFloatType
-    | JVMDoubleType
-    | JVMVoidType
-    -- WARNING-- special type, pointer to JVM opcodes
-    | JVMReturnAddressType
+data JvmPrimitiveType
+    = JvmIntType
+    | JvmByteType
+    | JvmShortType
+    | JvmLongType
+    | JvmCharType
+    | JvmFloatType
+    | JvmDoubleType
+    | JvmVoidType
+    -- WARNING-- special type, pointer to Jvm opcodes
+    | JvmReturnAddressType
     deriving (Eq, Show)
 
-data JVMClass = JVMClass
-    { classAccess :: JVMAccessModifier
+data JvmClass = JvmClass
+    { classAccess :: JvmAccessModifier
     , className :: FastString -- ^ the fully qualified name of the class
-    , classFields :: [JVMField]
-    , classConstructor :: Maybe JVMMethod
-    , classAttributes :: [JVMAttribute]
+    , classFields :: [JvmField]
+    , classConstructor :: Maybe JvmMethod
+    , classAttributes :: [JvmAttribute]
     }
     deriving (Eq, Show)
 
 -- |an array with an associated inner type
---newtype JVMArray = JVMArray { getClass :: JVMClass }
+--newtype JvmArray = JvmArray { getClass :: JvmClass }
 
 
-data JVMType
-    = JVMClassType JVMClass
-    | JVMPrimType JVMPrimitiveType
-    | JVMArray JVMClass
+data JvmType
+    = JvmClassType JvmClass
+    | JvmPrimType JvmPrimitiveType
+    | JvmArray JvmClass
     deriving (Eq, Show)
 
 -- fields are variables with access modifiers
 -- Java doesn't have any "global" variables
 -- the closest thing is a public static field of a public class
-data JVMField = JVMField
-    { fieldVar :: JVMVar
-    -- XXX: JVMVar also encapsulates JVMValue!
-    , fieldInitialValue :: Maybe JVMValue -- ^ ought to be compiled into <init> aka the constructor
+data JvmField = JvmField
+    { fieldVar :: JvmVar
+    -- XXX: JvmVar also encapsulates JvmValue!
+    , fieldInitialValue :: Maybe JvmValue -- ^ ought to be compiled into <init> aka the constructor
                                     -- could do a source-to-source
                                     -- transformation of moving all
                                     -- initial value code into the
@@ -83,13 +83,13 @@ data JVMField = JVMField
                                     -- however, it is helpful to know that
                                     -- these ought to be done at the very
                                     -- top of <init>
-    , fieldAccess :: JVMAccessModifier
+    , fieldAccess :: JvmAccessModifier
     }
     deriving (Eq, Show)
 
 -- | WARNING: not all attributes are valid for all types
 -- e.g. fields cannot be abstract
-data JVMAttribute
+data JvmAttribute
     = Static
     | Final
     | Abstract
@@ -98,11 +98,11 @@ data JVMAttribute
     | Native
     deriving (Eq, Show)
 
-data JVMMethod = JVMMethod
-    { methodAccess :: JVMAccessModifier
-    , methodAttributes :: [JVMAttribute]
-    , methodReturnType :: JVMType
-    , methodParameters :: [JVMType] -- ^ Invariant: cannot have more than 255 method parameters
+data JvmMethod = JvmMethod
+    { methodAccess :: JvmAccessModifier
+    , methodAttributes :: [JvmAttribute]
+    , methodReturnType :: JvmType
+    , methodParameters :: [JvmType] -- ^ Invariant: cannot have more than 255 method parameters
     }
     deriving (Eq, Show)
 
@@ -110,25 +110,25 @@ type MethodSpec = FastString
 
 -- expression types
 
--- XXX: Should JVMVar encapsulate JVMField or the other way around?
--- all variables are initialized to default values so a Maybe JVMValue is
+-- XXX: Should JvmVar encapsulate JvmField or the other way around?
+-- all variables are initialized to default values so a Maybe JvmValue is
 -- not needed
-data JVMVar = JVMVar JVMValue [JVMAttribute]
+data JvmVar = JvmVar JvmValue [JvmAttribute]
             deriving (Eq, Show)
 
 --local variables are referenced by index, counting from 0 for static
 --methods and 1 for non-static methods (local variable 0 is the this
 --pointer in non-static methods) 
---the JVM limits the number of local variables to 65535
+--the Jvm limits the number of local variables to 65535
 
 type VarNum = Int16
 
-data JVMLocalVar = JVMLocalVar VarNum JVMType [JVMAttribute]
+data JvmLocalVar = JvmLocalVar VarNum JvmType [JvmAttribute]
                  deriving (Eq, Show)
 
 -- | abstract type representing an intermediate value
 -- will later be assigned either to local variables or the stack
-data JVMValue = JVMValue JVMType JVMPrimitiveValue
+data JvmValue = JvmValue JvmType JvmPrimitiveValue
               deriving (Eq, Show)
 
 -- | the field spec is the classname and the fieldname

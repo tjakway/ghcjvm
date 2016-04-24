@@ -6,13 +6,13 @@ module Jvm.Expressions where
 
 import Jvm.Types
 
--- | a higher level of abstraction than raw JVM instructions
+-- | a higher level of abstraction than raw Jvm instructions
 -- these will be translated into their bytecode equivalents
 data AbstractInstruction 
-    = Ret JVMValue       -- ^ return to the address in the variable
-    | Load JVMValue      -- ^ pushes the variable onto the stack
-    | Store JVMValue     -- ^ pops a value into the local variable
-    | Push JVMValue
-    | Get JVMClass JVMField -- ^ get a field (static or non-static)
-    | Put JVMClass JVMField JVMValue -- ^ put a value into the specified (static or non-static) field
+    = Ret JvmValue       -- ^ return to the address in the variable
+    | Load JvmValue      -- ^ pushes the variable onto the stack
+    | Store JvmValue     -- ^ pops a value into the local variable
+    | Push JvmValue
+    | Get JvmClass JvmField -- ^ get a field (static or non-static)
+    | Put JvmClass JvmField JvmValue -- ^ put a value into the specified (static or non-static) field
     
