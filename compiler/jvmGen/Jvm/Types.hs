@@ -52,6 +52,7 @@ data JVMClass = JVMClass
     , classConstructor :: Maybe JVMMethod
     , classAttributes :: [JVMAttribute]
     }
+    deriving (Eq, Show)
 
 -- |an array with an associated inner type
 --newtype JVMArray = JVMArray { getClass :: JVMClass }
@@ -61,6 +62,7 @@ data JVMType
     = JVMClassType JVMClass
     | JVMPrimType JVMPrimitiveType
     | JVMArray JVMClass
+    deriving (Eq, Show)
 
 -- fields are variables with access modifiers
 -- Java doesn't have any "global" variables
@@ -83,6 +85,7 @@ data JVMField = JVMField
                                     -- top of <init>
     , fieldAccess :: JVMAccessModifier
     }
+    deriving (Eq, Show)
 
 -- | WARNING: not all attributes are valid for all types
 -- e.g. fields cannot be abstract
@@ -111,6 +114,7 @@ type MethodSpec = FastString
 -- all variables are initialized to default values so a Maybe JVMValue is
 -- not needed
 data JVMVar = JVMVar JVMValue [JVMAttribute]
+            deriving (Eq, Show)
 
 --local variables are referenced by index, counting from 0 for static
 --methods and 1 for non-static methods (local variable 0 is the this
