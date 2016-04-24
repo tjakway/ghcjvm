@@ -4,6 +4,8 @@ module Jvm.Expressions where
 
 #include "HsVersions.h"
 
+import Jvm.Types
+
 -- | a higher level of abstraction than raw JVM instructions
 -- these will be translated into their bytecode equivalents
 data AbstractInstruction 
