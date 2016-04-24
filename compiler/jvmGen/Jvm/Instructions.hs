@@ -1,5 +1,8 @@
 {-# LANGUAGE CPP #-}
 
+-- The JVM instruction set
+-- TODO: add support for interfaces (invokeinterface)
+
 module Jvm.Instructions where
 
 #include "HsVersions.h"
@@ -8,14 +11,31 @@ import Jvm.Types
 import FastString
 import GHC.Int (Int32)
 
+type MethodSpec = FastString
+type Args = JvmPrimitiveValue
 type Index = Int32
 type Count = Int32 -- ^ the JVM 7 spec often refers to size as "count", this convention is followed here
 
 -- | instructions and their parameters
+-- does NOT subclass nativeGen.Instruction because the JVM is a stack
+-- machine and well at all with code that expects registers
 -- TODO: add caload, castore, checkcast, dup2_x1, dup2_x2
 data Instruction
-    -- return to the address in the passed local variable
-    = Ret VarNum
+    -- | pseudo-ops
+    = Comment FastString 
+    | Label 
+            FastString      -- ^ class we're printing
+            Int             -- ^ line no. (only 1 label per line)
+            FastString      -- ^ label name
+    
+    
+    -- | miscellaneous instructions
+    | Ret VarNum -- ^ return to the address in the passed local variable
+    | Iinc VarNum Int8 -- ^ increment variable by the amount
+    | Instanceof ClassName -- ^ check if the reference on top of the stack is an instance of ClassName
+                           -- if ClassName is null, pushes (int) 0
+                           -- if true, pushes 1
+                           -- Otherwise, pushes 0
 
     -- loads and stores
     -- **********************************
@@ -32,6 +52,8 @@ data Instruction
     | Dastore JvmReference Index Double -- ^ store double into an array
     | Faload JvmReference Index 
     | Fastore JvmReference Index Float
+    | Iaload JvmReference Index
+    | Iastore JvmReference Index Int32
 
     -- loads and stores for various types
     | Aload VarNum  -- ^ load reference from the passed variable number
@@ -73,6 +95,11 @@ data Instruction
     | Fstore_3
 
     | Iload VarNum
+    | Iload_0
+    | Iload_1
+    | Iload_2
+    | Iload_3
+
     | Istore VarNum
     | Lload VarNum
     | Lstore VarNum
@@ -113,7 +140,31 @@ data Instruction
 
     -- branch instructions
     -- **********************************
-    | Goto JvmCodeLoc -- ^ unconditional branch
+    | Goto Label -- ^ unconditional branch
+                --reference comparisons
+    | If_acmpeq -- ^ branch if references are equal
+            Label  -- ^ the label is passed as an operand
+            JvmReference  -- ^ the references are popped off the stack
+            JvmReference 
+    | If_acmpne Label JvmReference JvmReference -- ^ branch if references are not equal (same format as above)
+    | Ifnonnull Label JvmReference              -- ^ branch if reference is not null
+    | Ifnull    Label JvmReference              -- ^ branch if reference is null
+    
+                                    -- ^ branch when...
+    | If_icmpeq Label Int32 Int32   -- ^ first == second
+    | If_icmpne Label Int32 Int32   -- ^ first /= second
+    | If_icmplt Label Int32 Int32   -- ^ first <  second
+    | If_icmple Label Int32 Int32   -- ^ first <= second
+    | If_icmpge Label Int32 Int32   -- ^ first >  second
+    | If_icmpgt Label Int32 Int32   -- ^ first >= second
+
+    -- | branch on comparison with 0
+    | Ifeq Label Int32              -- ^ param == 0
+    | Ifne Label Int32              -- ^ param /= 0
+    | Iflt Label Int32              -- ^ param <  0
+    | Ifle Label Int32              -- ^ param <= 0
+    | Ifge Label Int32              -- ^ param >  0
+    | Ifgt Label Int32              -- ^ param >= 0
     
     -- Arithmetic Instructions
     -- **********************************
@@ -124,7 +175,6 @@ data Instruction
     | Drem Double Double -- ^ first `mod` second ("remainder")
     | Dsub Double Double -- ^ first - second
 
-    -- these are identical to the above
     | Fadd Float Float
     | Fdiv Float Float
     | Fmul Float Float
@@ -133,19 +183,29 @@ data Instruction
     | Fsub Float Float
     
     | Iadd Int32 Int32
+    | Idiv Int32 Int32
+    | Imul Int32 Int32
+    | Ineg Int32 -- ^ negates the value on top of the stack
+    | Irem Int32 Int32
 
+    -- boolean logic
+    -- **********************************
+    | Iand Int32 Int32
+    | Ior  Int32 Int32
 
     -- method calls
     -- the MethodSpec indicates which method to call
+    -- arguments passed on the stack
     -- **********************************
-    | Invokevirtual MethodSpec
-    | Invokestate MethodSpec
-    | Invokenonvirtual MethodSpec
+    | Invokevirtual MethodSpec [Args]
+    | Invokestate MethodSpec [Args]
+    | Invokenonvirtual MethodSpec [Args]
 
 
     | Areturn JvmReference -- ^ return a reference to the method caller
-    | Dreturn Double
+    | Dreturn Double       -- ^ return a double to the method caller
     | Freturn Float
+    | Ireturn Int32
 
     -- instructions to manipulate fields
     -- see FieldSpec and FieldDescriptor for an explanation of their
@@ -160,12 +220,9 @@ data Instruction
     -- arrays
     -- **********************************
     | Arraylength JvmReference -- ^ pops an array reference and pushes its size
-    | Anewarray  -- ^ creates a new array of references
-                 -- takes 3 parameters, 2 of them as operands and one of
-                 -- them on the stack
-            Int8  -- ^ indexbyte1 -- PASSED AS AN OPERAND
-            Int8  -- ^ indexbyte2 -- PASSED AS AN OPERAND
-            Count -- ^ the count -- will be popped off the stack
+    | Anewarray                -- ^ creates a new array of references
+                ClassName       -- ^ the array type -- passed as an operand
+                Count           -- ^ the count (the array size) -- will be popped off the stack
     | Newarray Count -- ^ pass size
 
     -- "load constant", pushes a value on the stack
