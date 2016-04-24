@@ -14,6 +14,7 @@ data JVMAccessModifier
     = Public
     | Protected
     | Private
+    deriving (Eq, Show)
 
 --data JVMCodeLoc = undefined
 
@@ -29,6 +30,7 @@ data JVMPrimitiveValue
 --    | JVMReturnAddress JVMCodeLoc
     -- XXX
     | JVMReference
+    deriving (Eq, Show)
 
 data JVMPrimitiveType
     = JVMIntType
@@ -41,6 +43,7 @@ data JVMPrimitiveType
     | JVMVoidType
     -- WARNING-- special type, pointer to JVM opcodes
     | JVMReturnAddressType
+    deriving (Eq, Show)
 
 data JVMClass = JVMClass
     { classAccess :: JVMAccessModifier
@@ -90,6 +93,7 @@ data JVMAttribute
     | Sychronized
     | Volatile
     | Native
+    deriving (Eq, Show)
 
 data JVMMethod = JVMMethod
     { methodAccess :: JVMAccessModifier
@@ -97,6 +101,7 @@ data JVMMethod = JVMMethod
     , methodReturnType :: JVMType
     , methodParameters :: [JVMType] -- ^ Invariant: cannot have more than 255 method parameters
     }
+    deriving (Eq, Show)
 
 type MethodSpec = FastString
 
@@ -115,10 +120,12 @@ data JVMVar = JVMVar JVMValue [JVMAttribute]
 type VarNum = Int16
 
 data JVMLocalVar = JVMLocalVar VarNum JVMType [JVMAttribute]
+                 deriving (Eq, Show)
 
 -- | abstract type representing an intermediate value
 -- will later be assigned either to local variables or the stack
 data JVMValue = JVMValue JVMType JVMPrimitiveValue
+              deriving (Eq, Show)
 
 -- | the field spec is the classname and the fieldname
 type FieldSpec = FastString
