@@ -6,6 +6,8 @@ import FastString
 
 #include "HsVersions.h"
 
+import GHC.Int (Int16)
+
 -- data types and access modifiers
 
 data JVMAccessModifier
@@ -13,7 +15,7 @@ data JVMAccessModifier
     | Protected
     | Private
 
-data JVMCodeLoc = undefined
+--data JVMCodeLoc = undefined
 
 data JVMPrimitiveType
     = JVMInt
@@ -32,16 +34,16 @@ data JVMClass = JVMClass
     , className :: FastString -- ^ the fully qualified name of the class
     , classFields :: [JVMField]
     , classConstructor :: Maybe JVMMethod
-    , classAttributes :: [Attribute]
+    , classAttributes :: [JVMAttribute]
     }
 
 -- |an array with an associated inner type
-newtype JVMArray = JVMArray { getClass :: JVMClass }
+--newtype JVMArray = JVMArray { getClass :: JVMClass }
 
 
 data JVMType
-    = JVMType JVMClass
-    | JVMType JVMPrimitiveType
+    = JVMClassType JVMClass
+    | JVMPrimType JVMPrimitiveType
     | JVMArray JVMClass
 
 -- fields are variables with access modifiers
@@ -49,7 +51,7 @@ data JVMType
 -- the closest thing is a public static field of a public class
 data JVMField = JVMField
     { fieldVar :: JVMVar 
-    , fieldInitialValue :: Maybe JVMExpr -- ^ ought to be compiled into <init> aka the constructor
+    , fieldInitialValue :: Maybe JVMValue -- ^ ought to be compiled into <init> aka the constructor
                                     -- could do a source-to-source
                                     -- transformation of moving all
                                     -- initial value code into the
