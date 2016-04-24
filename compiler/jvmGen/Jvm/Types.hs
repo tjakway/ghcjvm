@@ -6,7 +6,7 @@ import FastString
 
 #include "HsVersions.h"
 
-import GHC.Int (Int8, Int16, Int32)
+import GHC.Int (Int8, Int16, Int32, Int64)
 
 -- data types and access modifiers
 
@@ -27,6 +27,8 @@ data JVMPrimitiveValue
     | JVMDouble Double
     | JVMVoid
 --    | JVMReturnAddress JVMCodeLoc
+    -- XXX
+    | JVMReference
 
 data JVMPrimitiveType
     = JVMIntType
@@ -60,8 +62,8 @@ data JVMType
 -- fields are variables with access modifiers
 -- Java doesn't have any "global" variables
 -- the closest thing is a public static field of a public class
-data JVMField a = JVMField
-    { fieldVar :: JVMVar a
+data JVMField = JVMField
+    { fieldVar :: JVMVar
     -- XXX: JVMVar also encapsulates JVMValue!
     , fieldInitialValue :: Maybe JVMValue -- ^ ought to be compiled into <init> aka the constructor
                                     -- could do a source-to-source
@@ -101,7 +103,9 @@ type MethodSpec = FastString
 -- expression types
 
 -- XXX: Should JVMVar encapsulate JVMField or the other way around?
-data JVMVar a = JVMVar (JVMValue a) [JVMAttribute]
+-- all variables are initialized to default values so a Maybe JVMValue is
+-- not needed
+data JVMVar = JVMVar JVMValue [JVMAttribute]
 
 --local variables are referenced by index, counting from 0 for static
 --methods and 1 for non-static methods (local variable 0 is the this
@@ -114,7 +118,7 @@ data JVMLocalVar = JVMLocalVar VarNum JVMType [JVMAttribute]
 
 -- | abstract type representing an intermediate value
 -- will later be assigned either to local variables or the stack
-data JVMValue a = JVMValue JVMType a
+data JVMValue = JVMValue JVMType JVMPrimitiveValue
 
 -- | the field spec is the classname and the fieldname
 type FieldSpec = FastString
