@@ -583,6 +583,7 @@ Library
             Jvm.Instructions
             Jvm.TypeInfo
             Jvm.Types
+            Jvm.JMonad
 
     if !flag(stage1)
         -- ghc:Serialized moved to ghc-boot:GHC.Serialized.  So for
