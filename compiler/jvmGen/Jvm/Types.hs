@@ -113,6 +113,8 @@ data JvmMethod = JvmMethod
     }
     deriving (Eq, Show)
 
+instance HasBinarySignature JvmMethod where
+        getBinarySignature = undefined
 
 -- expression types
 
