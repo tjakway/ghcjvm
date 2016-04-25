@@ -42,7 +42,7 @@ data Instruction
  | Aload_1
  | Aload_2
  | Aload_3
- | Anewarray
+ | Anewarray ClassName
  | Areturn
  | Arraylength
  | Astore
@@ -56,7 +56,7 @@ data Instruction
  | Bipush
  | Caload
  | Castore
- | Checkcast
+ | Checkcast ClassName
  | D2f
  | D2i
  | D2l
@@ -161,7 +161,7 @@ data Instruction
  | Iload_3
  | Imul
  | Ineg
- | Instanceof
+ | Instanceof ClassName
  | Invokedynamic
  | Invokeinterface
  | Invokespecial
@@ -188,6 +188,7 @@ data Instruction
  | Laload
  | Land
  | Lastore
+ | Lcmp
  | Lconst_0
  | Lconst_1
  | Ldc
@@ -218,14 +219,14 @@ data Instruction
  | Monitorenter
  | Monitorexit
  | Multianewarray
- | New
+ | New ClassName
  | Newarray
  | Nop
  | Pop
  | Pop2
  | Putfield
  | Putstatic
- | Ret
+ | Ret VarNum
  | Return
  | Saload
  | Sastore
