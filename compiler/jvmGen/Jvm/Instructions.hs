@@ -26,10 +26,14 @@ type BinarySignature = ((Stack, LocalVariables), -- ^ Input
 -- machine and well at all with code that expects registers
 -- TODO: add caload, castore, checkcast, dup2_x1, dup2_x2
 data Instruction
-
-
-
- = Aaload
+ -- | pseudo-ops
+ = Comment FastString 
+ | Label 
+        FastString      -- ^ class we're printing
+        Int             -- ^ line no. (only 1 label per line)
+        FastString      -- ^ label name
+ 
+ | Aaload
  | Aastore
  | Aconst_null
  | Aload
@@ -133,9 +137,14 @@ data Instruction
  | Iconst_4
  | Iconst_5
  | Idiv
- | If_acmp<Cond>
- | If_icmp<Cond>
- | If<Cond>
+ | If_acmpeq
+ | If_icmpne
+ | Ifeq
+ | Ifne
+ | Iflt
+ | Ifle
+ | Ifgt
+ | Ifge
  | Ifnonnull
  | Ifnull
  | Iinc
@@ -158,7 +167,10 @@ data Instruction
  | Ishl
  | Ishr
  | Istore
- | Istore_<N>
+ | Istore_0
+ | Istore_1
+ | Istore_2
+ | Istore_3
  | Isub
  | Iushr
  | Ixor
@@ -179,7 +191,10 @@ data Instruction
  | Ldc2_w
  | Ldiv
  | Lload
- | Lload_<N>
+ | Lload_0
+ | Lload_1
+ | Lload_2
+ | Lload_3
  | Lmul
  | Lneg
  | Lookupswitch
@@ -189,7 +204,10 @@ data Instruction
  | Lshl
  | Lshr
  | Lstore
- | Lstore_<N>
+ | Lstore_0
+ | Lstore_1
+ | Lstore_2
+ | Lstore_3
  | Lsub
  | Lushr
  | Lxor
@@ -211,7 +229,7 @@ data Instruction
  | Swap
  | Tableswitch
  | Wide
-
+deriving (Show, Eq)
 
 class HasBinarySignature a where
         getBinarySignature :: a -> BinarySignature
