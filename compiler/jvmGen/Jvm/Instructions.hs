@@ -16,6 +16,11 @@ type Args = JvmPrimitiveValue
 type Index = Int32
 type Count = Int32 -- ^ the JVM 7 spec often refers to size as "count", this convention is followed here
 
+type Stack = [JvmPrimitiveType]
+type LocalVariables = [JvmPrimitiveType]
+type BinarySignature = ((Stack, LocalVariables), -- ^ Input
+                        (Stack, LocalVariables)) -- ^ Output
+
 -- | instructions and their parameters
 -- does NOT subclass nativeGen.Instruction because the JVM is a stack
 -- machine and well at all with code that expects registers
