@@ -37,7 +37,7 @@ data Instruction
  | Aaload
  | Aastore
  | Aconst_null
- | Aload
+ | Aload 
  | Aload_0       
  | Aload_1
  | Aload_2
@@ -45,7 +45,7 @@ data Instruction
  | Anewarray ClassName
  | Areturn
  | Arraylength
- | Astore
+ | Astore 
  | Astore_0
  | Astore_1
  | Astore_2
@@ -53,7 +53,7 @@ data Instruction
  | Athrow
  | Baload
  | Bastore
- | Bipush
+ | Bipush Int32
  | Caload
  | Castore
  | Checkcast ClassName
@@ -68,7 +68,7 @@ data Instruction
  | Dconst_0
  | Dconst_1
  | Ddiv
- | Dload
+ | Dload 
  | Dload_0
  | Dload_1
  | Dload_2
@@ -77,7 +77,7 @@ data Instruction
  | Dneg
  | Drem
  | Dreturn
- | Dstore
+ | Dstore 
  | Dstore_0
  | Dstore_1
  | Dstore_2
@@ -101,7 +101,7 @@ data Instruction
  | Fconst_1
  | Fconst_2
  | Fdiv
- | Fload
+ | Fload 
  | Fload_0
  | Fload_1
  | Fload_2
@@ -110,7 +110,7 @@ data Instruction
  | Fneg
  | Frem
  | Freturn
- | Fstore
+ | Fstore 
  | Fstore_0
  | Fstore_1
  | Fstore_2
@@ -154,7 +154,7 @@ data Instruction
  | Ifnonnull Label
  | Ifnull Label
  | Iinc
- | Iload
+ | Iload 
  | Iload_0
  | Iload_1
  | Iload_2
@@ -172,7 +172,7 @@ data Instruction
  | Ireturn
  | Ishl
  | Ishr
- | Istore
+ | Istore 
  | Istore_0
  | Istore_1
  | Istore_2
@@ -226,11 +226,11 @@ data Instruction
  | Pop2
  | Putfield
  | Putstatic
- | Ret VarNum
+ | Ret 
  | Return
  | Saload
  | Sastore
- | Sipush
+ | Sipush Int8
  | Swap
  | Tableswitch
  | Wide
