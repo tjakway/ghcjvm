@@ -63,7 +63,7 @@ data Instruction
  | Dadd
  | Daload
  | Dastore
- | Dcmpg
+ | Dcmpg -- ^ these instructions don't take labels--they return on the stack
  | Dcmpl
  | Dconst_0
  | Dconst_1
@@ -118,8 +118,7 @@ data Instruction
  | Fsub
  | Getfield
  | Getstatic
- | Goto
- | Goto_w
+ | Goto Label
  | I2b
  | I2c
  | I2d
@@ -138,16 +137,22 @@ data Instruction
  | Iconst_4
  | Iconst_5
  | Idiv
- | If_acmpeq
- | If_icmpne
+ | If_acmpeq Label
+ | If_acmpne Label
+ | If_icmpeq Label
+ | If_icmpne Label
+ | If_icmpge Label
+ | If_icmpgt Label
+ | If_icmplt Label
+ | If_icmple Label
  | Ifeq
  | Ifne
  | Iflt
  | Ifle
  | Ifgt
  | Ifge
- | Ifnonnull
- | Ifnull
+ | Ifnonnull Label
+ | Ifnull Label
  | Iinc
  | Iload
  | Iload_0
@@ -175,8 +180,7 @@ data Instruction
  | Isub
  | Iushr
  | Ixor
- | Jsr
- | Jsr_w
+ | Jsr Label
  | L2d
  | L2f
  | L2i
@@ -184,7 +188,6 @@ data Instruction
  | Laload
  | Land
  | Lastore
- | Lcmp
  | Lconst_0
  | Lconst_1
  | Ldc
