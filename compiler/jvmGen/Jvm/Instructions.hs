@@ -20,6 +20,7 @@ type Stack = [JvmPrimitiveType]
 type LocalVariables = [JvmPrimitiveType]
 type BinarySignature = ((Stack, LocalVariables), -- ^ Input
                         (Stack, LocalVariables)) -- ^ Output
+emptySignature = (([], []), ([], []))
 
 -- | instructions and their parameters
 -- does NOT subclass nativeGen.Instruction because the JVM is a stack
@@ -235,5 +236,8 @@ class HasBinarySignature a where
         getBinarySignature :: a -> BinarySignature
 
 instance HasBinarySignature Instruction where
-        getBinarySignature i = case i of _ -> panic "Instruction not implemented!"
+        getBinarySignature i = case i of Comment _ -> emptySignature
+                                         Label _ _ _ -> emptySignature
+                                         Iadd -> (([JvmInt, JvmInt], []), ([JvmInt], []))
+                                         _ -> panic "Instruction not implemented!"
 
