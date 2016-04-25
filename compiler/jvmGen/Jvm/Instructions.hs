@@ -25,7 +25,7 @@ emptySignature = (([], []), ([], []))
 -- | instructions and their parameters
 -- does NOT subclass nativeGen.Instruction because the JVM is a stack
 -- machine and well at all with code that expects registers
--- TODO: add caload, castore, checkcast, dup2_x1, dup2_x2
+-- (possible) TODO: add pseudo-ops to convert variables?
 data Instruction
  -- | pseudo-ops
  = Comment FastString 
