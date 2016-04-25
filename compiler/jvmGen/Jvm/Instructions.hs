@@ -16,7 +16,7 @@ type Args = JvmPrimitiveValue
 type Index = Int32
 type Count = Int32 -- ^ the JVM 7 spec often refers to size as "count", this convention is followed here
 
-type Stack = [JvmPrimitiveType]
+type Stack = [JvmPrimitiveType] -- ^ our "stack" grows LEFT, i.e. cons pushes onto the stack
 type LocalVariables = [JvmPrimitiveType]
 type BinarySignature = ((Stack, LocalVariables), -- ^ Input
                         (Stack, LocalVariables)) -- ^ Output
@@ -239,5 +239,6 @@ instance HasBinarySignature Instruction where
         getBinarySignature i = case i of Comment _ -> emptySignature
                                          Label _ _ _ -> emptySignature
                                          Iadd -> (([JvmInt, JvmInt], []), ([JvmInt], []))
+
                                          _ -> panic "Instruction not implemented!"
 
