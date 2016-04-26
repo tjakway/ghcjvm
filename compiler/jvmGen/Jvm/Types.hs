@@ -19,33 +19,20 @@ data JvmAccessModifier
     deriving (Eq, Show)
 
 -- XXX: implement
-data JvmCodeLoc = JvmCodeLoc FastString
-
-data JvmPrimitiveValue
-    = JvmInt Int32
-    | JvmByte Int8
-    | JvmShort Int16
-    | JvmLong Int64
-    | JvmChar Int16 -- ^ the Jvm uses UTF-16, chars are 16 bits
-    | JvmFloat Float
-    | JvmDouble Double
-    | JvmVoid
---    | JvmReturnAddress JvmCodeLoc
-    -- XXX
-    | JvmReference
-    deriving (Eq, Show)
+newtype JvmCodeLoc = JvmCodeLoc FastString
 
 data JvmPrimitiveType
-    = JvmIntType
-    | JvmByteType
-    | JvmShortType
-    | JvmLongType
-    | JvmCharType
-    | JvmFloatType
-    | JvmDoubleType
-    | JvmVoidType
+    = JvmInt
+    | JvmByte
+    | JvmShort
+    | JvmLong
+    | JvmChar
+    | JvmFloat
+    | JvmDouble
+    | JvmVoid
+    | JvmReference
     -- WARNING-- special type, pointer to Jvm opcodes
-    | JvmReturnAddressType
+    | JvmReturnAddress
     deriving (Eq, Show)
 
 data JvmType
