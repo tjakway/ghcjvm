@@ -29,6 +29,12 @@ mkSig = (,) -- ^ passing input and output as parameters looks better
 
 
 -- | instructions and their parameters
+--
+-- follow the template of Aload: add a VarNum parameter to instructions
+-- that take a variable index as an opcode parameter and implement
+-- clobbersVariable for instructions that hardcode the variable (Aload_0,
+-- Aload_1, etc.)
+--
 -- does NOT subclass nativeGen.Instruction because the JVM is a stack
 -- machine and well at all with code that expects registers
 -- (possible) TODO: add pseudo-ops to convert variables?
@@ -44,7 +50,7 @@ data Instruction
  | Aaload
  | Aastore
  | Aconst_null
- | Aload 
+ | Aload VarNum
  | Aload_0       
  | Aload_1
  | Aload_2
