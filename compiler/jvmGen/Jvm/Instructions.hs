@@ -11,21 +11,28 @@ import Jvm.Types
 import FastString
 import GHC.Int (Int32)
 
-type MethodSpec = FastString
-type Args = JvmPrimitiveValue
-type Index = Int32
-type Count = Int32 -- ^ the JVM 7 spec often refers to size as "count", this convention is followed here
-
+-- Instruction-specific types
 type Stack = [JvmPrimitiveType] -- ^ our "stack" grows LEFT, i.e. cons pushes onto the stack
-type LocalVariables = [JvmPrimitiveType]
+
+-- | only records the TYPES of input/output variables, NOT their indices
+-- the actual variable allocation is handled by the code generator
+-- for example: JvmInt means an integer stored in a variable, such as an
+-- array index
+type LocalVariables = [JvmPrimitiveType] 
+                                         
+                                         
+                                                                                 
 type BinarySignature = ((Stack, LocalVariables), -- ^ Input
                         (Stack, LocalVariables)) -- ^ Output
 emptySignature = (([], []), ([], []))
+mkSig = (,) -- ^ passing input and output as parameters looks better
+
 
 -- | instructions and their parameters
 -- does NOT subclass nativeGen.Instruction because the JVM is a stack
 -- machine and well at all with code that expects registers
 -- (possible) TODO: add pseudo-ops to convert variables?
+-- TODO: add VarNum parameters
 data Instruction
  -- | pseudo-ops
  = Comment FastString 
@@ -242,7 +249,25 @@ class HasBinarySignature a where
 instance HasBinarySignature Instruction where
         getBinarySignature i = case i of Comment _ -> emptySignature
                                          Label _ _ _ -> emptySignature
+                                         Aaload -> mkSig ([JvmReference, JvmInt], []) ([JvmReference], [])
+                                         Aastore ->  mkSig ([JvmReference, JvmInt, JvmReference], []) ([], [])
+                                         Aconst_null -> mkSig ([], []) ([JvmReference], [])
+                                         Aload -> mkSig ([], [JvmReference]) ([JvmReference], [])
+                                         Aload_0 -> mkSig ([], [JvmReference]) ([JvmReference], [])
+                                         Aload_1 -> mkSig ([], [JvmReference]) ([JvmReference], [])
+                                         Aload_2 -> mkSig ([], [JvmReference]) ([JvmReference], [])
+                                         Aload_3 -> mkSig ([], [JvmReference]) ([JvmReference], [])
                                          Iadd -> (([JvmInt, JvmInt], []), ([JvmInt], []))
-
+                                         Isub -> (([JvmInt, JvmInt], []), ([JvmInt], []))
                                          _ -> panic "Instruction not implemented!"
 
+
+-- | Nothing = does not clobber variable
+-- Just = Which variable it clobbers
+clobbersVariable :: Instruction -> Maybe Int
+clobbersVariable i = case i of Aload_0 -> Just 0
+                               Aload_1 -> Just 1
+                               Aload_2 -> Just 2
+                               Aload_3 -> Just 3
+                               -- XXX: implement
+                               _ -> Nothing
