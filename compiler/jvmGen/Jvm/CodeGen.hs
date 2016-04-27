@@ -4,7 +4,9 @@ import OrdList
 import Jvm.Types
 import Jvm.Expressions
 import Jvm.Instructions
-(
+
+
+
 stackSize :: JvmMethod -> Int
 stackSize = undefined
 
@@ -53,7 +55,6 @@ type CodeBlock = OrdList Instruction
 
 -- | Modeled on the Llvm code generator's function of the same name
 stmtToInstrs :: CmmNode e x -> JMonad CodeBlock
-        
 stmtToInstrs stmt = case stmt of
 
     -- | keep comments, don't keep ticks or unwind instructions
