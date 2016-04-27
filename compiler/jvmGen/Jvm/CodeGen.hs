@@ -11,6 +11,13 @@ import Jvm.Instructions
 newtype UniqVar = UniqVar Unique JvmPrimitiveType (Maybe Values.JvmValue)
                   deriving (Show, Eq)
 
+type StaticVar = JvmField
+type StaticVars = OrdList StaticVar
+type UniqVars = OrdList UniqVar
+
+mkStatic
+
+
 stackSize :: JvmMethod -> Int
 stackSize = undefined
 
@@ -57,8 +64,11 @@ resolveBinarySignatures actual desired = undefined
 
 type CodeBlock = OrdList Instruction
 
+type CodeData = (CodeBlock, StaticVars, UniqVars)
+
+
 -- | Modeled on the Llvm code generator's function of the same name
-stmtToInstrs :: CmmNode e x -> JMonad CodeBlock
+stmtToInstrs :: CmmNode e x -> JMonad CodeData
 stmtToInstrs stmt = case stmt of
 
     -- | keep comments, don't keep ticks or unwind instructions

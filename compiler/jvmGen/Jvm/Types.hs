@@ -121,11 +121,6 @@ type VarNum = Int16
 data JvmLocalVar = JvmLocalVar VarNum JvmType [JvmAttribute]
                  deriving (Eq, Show)
 
--- | abstract type representing an intermediate value
--- will later be assigned either to local variables or the stack
-data JvmValue = JvmValue JvmType JvmPrimitiveValue
-              deriving (Eq, Show)
-
 -- | the field spec is the classname and the fieldname
 type FieldSpec = FastString
 -- | the field descriptor is the java type of the field
