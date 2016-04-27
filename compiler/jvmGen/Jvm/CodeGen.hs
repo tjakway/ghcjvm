@@ -2,10 +2,14 @@ module Jvm.CodeGen where
 
 import OrdList
 import Jvm.Types
+import qualified Jvm.Values as Values
 import Jvm.Expressions
 import Jvm.Instructions
 
-
+-- | data whose storage location will be determined by the code generator
+-- e.g. the result of a function call
+newtype UniqVar = UniqVar Unique JvmPrimitiveType (Maybe Values.JvmValue)
+                  deriving (Show, Eq)
 
 stackSize :: JvmMethod -> Int
 stackSize = undefined
