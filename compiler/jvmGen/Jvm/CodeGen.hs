@@ -15,8 +15,7 @@ type StaticVar = JvmField
 type StaticVars = OrdList StaticVar
 type UniqVars = OrdList UniqVar
 
-mkStatic
-
+mkStatic = undefined
 
 stackSize :: JvmMethod -> Int
 stackSize = undefined
