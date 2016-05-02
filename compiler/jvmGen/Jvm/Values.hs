@@ -1,6 +1,6 @@
 module Jvm.Values where
 
-import Ghc.Int (Int8, Int16, Int32, Int64)
+import GHC.Int (Int8, Int16, Int32, Int64)
 
 data JvmValue
     = JvmInt Int32
