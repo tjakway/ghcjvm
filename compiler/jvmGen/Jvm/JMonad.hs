@@ -22,6 +22,8 @@ data JvmEnv = JvmEnv
     , envDynFlags :: DynFlags        -- ^ Dynamic flags
     , envOutput :: BufHandle         -- ^ Output buffer
     , envUniq :: UniqSupply          -- ^ Supply of unique values
+    , envGeneratedClasses :: OrdList JvmClass -- ^ list of classes to output
+    , 
     }
 
 -- | JMonad, wraps state and IO
