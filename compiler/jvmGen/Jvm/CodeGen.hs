@@ -69,7 +69,6 @@ type CodeBlock = OrdList Instruction
 type CodeData = (CodeBlock, StaticVars, UniqVars)
 
 
-genGlobalReg :: GlobalReg -> JMonad CodeData
 
 -- | Modeled on the Llvm code generator's function of the same name
 stmtToInstrs :: CmmNode e x -> JMonad CodeData
@@ -80,3 +79,7 @@ stmtToInstrs stmt = case stmt of
     CmmTick    _         -> return nilOL
     CmmUnwind  {}        -> return nilOL
 
+
+-- convert the OrdList of global registers into a class
+genRegisterClass :: OrdList GlobalReg -> JvmClass
+genRegisterClass = undefined
