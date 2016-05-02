@@ -17,14 +17,16 @@ import UniqSupply
 -- JVM
 type JvmVersion = Float
 
+-- | TODO: write Outputable instance
 data JvmEnv = JvmEnv
     { envVersion :: JvmVersion       -- ^ target JVM version
     , envDynFlags :: DynFlags        -- ^ Dynamic flags
     , envOutput :: BufHandle         -- ^ Output buffer
     , envUniq :: UniqSupply          -- ^ Supply of unique values
     , envGeneratedClasses :: OrdList JvmClass -- ^ list of classes to output
-    , 
+    , envGlobalRegs :: OrdList GlobalReg -- ^ global registers used
     }
+    deriving (Show)
 
 -- | JMonad, wraps state and IO
 newtype JMonad a = JMonad { runJMonad :: JvmEnv -> IO (a, JvmEnv) }

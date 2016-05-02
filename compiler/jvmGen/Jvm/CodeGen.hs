@@ -61,10 +61,15 @@ checkBinarySignature = undefined
 resolveBinarySignatures :: BinarySignature -> BinarySignature -> Either FastString [Instruction]
 resolveBinarySignatures actual desired = undefined
 
+genMethodSignature :: JVMMethod -> FastString
+genMethodSignature = undefined
+
 type CodeBlock = OrdList Instruction
 
 type CodeData = (CodeBlock, StaticVars, UniqVars)
 
+
+genGlobalReg :: GlobalReg -> JMonad CodeData
 
 -- | Modeled on the Llvm code generator's function of the same name
 stmtToInstrs :: CmmNode e x -> JMonad CodeData
