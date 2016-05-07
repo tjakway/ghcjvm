@@ -45,3 +45,29 @@ instance Monad JMonad where
 
 instance HasDynFlags JMonad where
     getDynFlags = JMonad $ \env -> return (envDynFlags env, env)
+
+
+runJMonadGen :: DynFlags -> BufHandle -> UniqSupply -> JMonad () -> IO ()
+runJMonadGen dflags out us m = do
+        _ <- runJMond m env
+        return ()
+    where env = JMonadEnv { envVersion = 49.0
+                          , envDynFlags = dflags
+                          , envOutput = out
+                          , envUniq = us
+                          , envGeneratedClasses = nilOL
+                          , envGlobalRegs = nilOL
+                          }
+
+instance MonadUnique JMonad where
+    getUniqueSupplyM = do
+        us <- getEnv envUniq
+        let (us1, us2) = splitUniqSupply us
+        modifyEnv (\s -> s { envUniq = us2 })
+        return us1
+
+    getUniqueM = do
+        us <- getEnv envUniq
+        let (u,us') = takeUniqFromSupply us
+        modifyEnv (\s -> s { envUniq = us' })
+        return u
